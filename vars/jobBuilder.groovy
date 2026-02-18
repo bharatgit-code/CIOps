@@ -109,7 +109,7 @@ spec:
                             git{
                                 remote {
                                     url("${entry.getKey()}")
-                                    credentials('git_read')
+                                    credentials('git_read_https')
                                 } 
                                 branch ('\${BRANCH}')
                                 scriptPath('Jenkinsfile')
