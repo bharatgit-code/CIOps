@@ -29,9 +29,9 @@ spec:
             name: jenkins-credentials
             key: dockerPassword
       - name: DOCKER_NAMESPACE
-        value: upyogio
+        value: devupyog
       - name: DOCKER_GROUP_NAME  
-        value: dev
+        value: ""
     resources:
       requests:
         memory: "768Mi"
@@ -128,7 +128,7 @@ spec:
            jobDsl scriptText: jobDslScript.toString()
         }
 
-        stage('Creating Repositories in DockerHub') {
+/*        stage('Creating Repositories in DockerHub') {
                     withEnv(["REPO_LIST=${repoList}"
                     ]) {
                         container(name: 'build-utils', shell: '/bin/sh') {
@@ -136,7 +136,7 @@ spec:
                            //sh (script:'echo \$REPO_LIST')
                         }
                     }
-        }
+        }*/
                 
 
     }
