@@ -75,11 +75,27 @@ spec:
             // Create folder structure
             List<String> folders = Utils.foldersToBeCreatedOrUpdated(allJobConfigs, env)
 
-            folders.each { folderName ->
+        /*    folders.each { folderName ->
                 jobDslScript.append("""
                     folder("${folderName}")
                 """)
-            }
+            }*/
+            allJobConfigs.each { job ->
+
+    def fullPath = "dev/${job.getName()}"
+    def parts = fullPath.split('/')
+
+    def currentPath = ""
+
+    parts[0..-2].each { part ->
+
+        currentPath = currentPath ? "${currentPath}/${part}" : part
+
+        jobDslScript.append("""
+            folder("${currentPath}")
+        """)
+    }
+}
 
             // Create pipeline jobs
             jobConfigMap.each { repoUrl, jobConfigs ->
