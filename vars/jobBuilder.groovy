@@ -6,9 +6,9 @@ import org.egov.jenkins.models.BuildConfig
 def call(Map params) {
 
     String branchName = params.branch ?: "nmc-dev-main"
-    String k8sCloud = params.k8sCloud ?: "dev-cluster"
+   // String k8sCloud = params.k8sCloud ?: "dev-cluster"
 
-    podTemplate(cloud: k8sCloud, yaml: """
+    podTemplate(yaml: """
 kind: Pod
 metadata:
   name: build-utils
