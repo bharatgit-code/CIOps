@@ -29,7 +29,7 @@ spec:
             name: jenkins-credentials
             key: dockerPassword
       - name: DOCKER_NAMESPACE
-        value: upyogio
+        value: devupyog
       - name: DOCKER_GROUP_NAME  
         value: dev
     resources:
@@ -70,7 +70,7 @@ spec:
                           """);
                     }
 
-        for (Map.Entry<Integer, String> entry : jobConfigMap.entrySet()) {   
+        for (Map.Entry<String, List<JobConfig>> entry : jobConfigMap.entrySet()) {   
 
             List<JobConfig> jobConfigs = entry.getValue();
 
@@ -83,24 +83,17 @@ spec:
 
             repoList = String.join(",", repoSet);     
 
-            jobDslScript.append("""
-            pipelineJob("${jobConfigs.get(i).getName()}") {
+            def targetBranches = [
+                [name: 'dev', branch: 'nmc-dev-main'],
+                [name: 'staging', branch: 'nmc-staging-main']
+            ];
+
+            targetBranches.each { b ->
+                String envJobName = "${jobConfigs.get(i).getName()}/${b.name}";
+                jobDslScript.append("""
+            pipelineJob("${envJobName}") {
                 logRotator(-1, 5, -1, -1)
                 parameters {  
-                  gitParameterDefinition {
-                        name('BRANCH')
-                        type('PT_BRANCH_TAG')
-                        description('') 
-                        branch('')      
-                        useRepository('')                     
-                        defaultValue('origin/master') 
-                        branchFilter('.*')
-                        tagFilter('*')
-                        sortMode('ASCENDING_SMART')
-                        selectedValue('DEFAULT')
-                        quickFilterEnabled(true)
-                        listSize('5')                 
-                }
                   booleanParam('ALT_REPO_PUSH', false, 'Check to push images to GCR')
             }
                 definition {
@@ -111,8 +104,8 @@ spec:
                                     url("${entry.getKey()}")
                                     credentials('git_read')
                                 } 
-                                branch ('\${BRANCH}')
-                                scriptPath('Jenkinsfile')
+                                branch ('${b.branch}')
+                                scriptPath('Jenkinsfile-nmc')
                                 extensions { }
                             }
                         }
@@ -121,6 +114,7 @@ spec:
                 }
             }
 """);
+            }
         }
         }
 
