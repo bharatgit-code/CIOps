@@ -5,7 +5,7 @@ import org.egov.jenkins.models.BuildConfig
 
 def call(Map params) {
 
-    podTemplate(yaml: """
+    podTemplate(cloud: 'jenkins-build', yaml: """
 kind: Pod
 metadata:
   name: build-utils
