@@ -51,7 +51,7 @@ spec:
         for (int i = 0; i < gitUrls.size(); i++) {
             String dirName = Utils.getDirName(gitUrls[i]);
             dir(dirName) {
-                 String configBranch = params.configBranch ?: 'nmc-dev-main'
+                String configBranch = params.configBranch ?: 'nmc-dev-main'
                 git url: gitUrls[i], branch: configBranch, credentialsId: 'git_read'
                  def yaml = readYaml file: configFile;
                  List<JobConfig> jobConfigs = ConfigParser.populateConfigs(yaml.config, env);
