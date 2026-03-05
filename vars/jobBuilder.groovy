@@ -51,7 +51,8 @@ spec:
         for (int i = 0; i < gitUrls.size(); i++) {
             String dirName = Utils.getDirName(gitUrls[i]);
             dir(dirName) {
-                 git url: gitUrls[i], credentialsId: 'git_read'
+                 String configBranch = params.configBranch ?: 'nmc-dev-main'
+                git url: gitUrls[i], branch: configBranch, credentialsId: 'git_read'
                  def yaml = readYaml file: configFile;
                  List<JobConfig> jobConfigs = ConfigParser.populateConfigs(yaml.config, env);
                  jobConfigMap.put(gitUrls[i],jobConfigs);
@@ -81,6 +82,11 @@ spec:
             }  
 
             repoList = String.join(",", repoSet);     
+
+            // Ensure service folder exists before creating env jobs under it
+            jobDslScript.append("""
+                          folder("${jobConfigs.get(i).getName()}")
+                          """);
 
             def targetBranches = [
                 [name: 'dev', branch: 'nmc-dev-main'],
